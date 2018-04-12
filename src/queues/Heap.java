@@ -2,11 +2,11 @@
 package queues;
 import java.util.ArrayList;
 
-public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
+public class Heap<T extends Comparable<T>> {
 
   ArrayList<T> values;
 
-  public BinaryHeapQueue() {
+  public Heap() {
     values = new ArrayList<T>();
   }
 

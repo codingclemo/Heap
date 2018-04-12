@@ -1,12 +1,12 @@
 package tests;
 
 import java.util.Random;
-import queues.BinaryHeapQueue;
+import queues.Heap;
 
 public class PQueueTest {
 
   public static void main(String[] args) {
-    BinaryHeapQueue<Integer> h = new BinaryHeapQueue<Integer>();
+    Heap<Integer> h = new Heap<Integer>();
     System.out.println(h);
     h.enqueue(1);
     System.out.println(h);
