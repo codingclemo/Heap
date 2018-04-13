@@ -1,21 +1,22 @@
-// file: heap/queues/BinaryHeapQueue.java
+// file: heap/queues/DHeapQueue.java
 package queues;
 import java.util.ArrayList;
 import queues.Heap;
 import java.util.Collections;
 
-public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
+public class DHeapQueue<T extends Comparable<T>> extends Heap {
 
-	public BinaryHeapQueue() {
+	public DHeapQueue() {
 		super();
+    }
+
+    /////////////////////////////////////////////////TODO:
+	public DHeapQueue(DHeapQueue<T> dhq) { // "copy constructor"
+		super();
+		values = dhq.copyValues();
 	}
 
-	public BinaryHeapQueue(BinaryHeapQueue<T> bhq) { // "copy constructor"
-		super();
-		values = bhq.copyValues();
-	}
-
-	public void insertUnordered(int elem) {
+    public void insertUnordered(int elem) {
 		values.add(elem);
 	}
 
@@ -23,8 +24,9 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 		for (int i = 0; i < elemArray.length; i++) {
 		values.add(values.size(), elemArray[i]);
 		}
-	}
+    }
 
+    /////////////////////////////////////////////////TODO:
 	public void heapify() {
 		int lastIndex = values.size() - 1; // get the index of the last element in the array
 		for (int i = lastIndex / 2; i >= 0; i--) { // decrement "up" the heap parent = (i-1)/2
@@ -36,8 +38,9 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 		lastIndex--;
 		checkPos(0, lastIndex);
 		}
-	}
-
+    }
+    
+    /////////////////////////////////////////////////TODO:
 	// index of the successor and the newly added index on the last position are checked
 	public void checkPos(int succ, int lastIndex) {
 		int leftChild = left(succ);  // changed method to protected to work here
@@ -54,7 +57,33 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 		}
 	}
 
-	public void insert(int elem) {
+
+	public int[] nLargest(int n) {
+		if(values.size() < n) 
+			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
+		
+			DHeapQueue<T> temp = new DHeapQueue<T>(this);
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++) {
+				result[i] = (Integer) values.get(i);
+			}
+		return result;
+	}
+
+    /////////////////////////////////////////////////TODO:    
+	public int[] removeNLargest (int n) {
+		if(values.size() < n) 
+			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
+	
+			DHeapQueue<T> temp = new DHeapQueue<T>(this);
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++) {
+				result[i] = (Integer) values.remove(i);
+			}
+		return result;
+	}    
+
+    public void insert(int elem) {
 		assert isHeap();
 		insertUnordered(elem);
 		heapify();
@@ -65,43 +94,19 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 		if (values.isEmpty())
 			throw new IllegalStateException("max() queue is empty");
 		return (Integer) values.get(0);
-	}
-
-	public int removeMax() {
+    }
+    
+    public int removeMax() {
 		if (values.isEmpty())
 			throw new IllegalStateException("removeMax() queue is empty");
 		return (Integer) dequeue();
-	}
-
-	public int[] nLargest(int n) {
-		if(values.size() < n) 
-			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
-		
-			BinaryHeapQueue<T> temp = new BinaryHeapQueue<T>(this);
-			int[] result = new int[n];
-			for (int i = 0; i < n; i++) {
-				result[i] = (Integer) values.get(i);
-			}
-		return result;
-	}
-
-	public int[] removeNLargest (int n) {
-		if(values.size() < n) 
-			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
-	
-			BinaryHeapQueue<T> temp = new BinaryHeapQueue<T>(this);
-			int[] result = new int[n];
-			for (int i = 0; i < n; i++) {
-				result[i] = (Integer) values.remove(i);
-			}
-		return result;
-	}
-
-	public int size(){
+    }
+    
+    public int size(){
 		return values.size();
 	}
 
-	public void merge(BinaryHeapQueue<T> queue) {
+	public void merge(DHeapQueue<T> queue) {
 		for (int i = 0; i < queue.size(); i++){
 			values.add( (Integer) queue.values.get(i));
 		}
@@ -113,7 +118,8 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
         temp.addAll(values);
         return temp; 
 	}
-	
+    
+    /////////////////////////////////////////////////TODO:
 	//check if heap in constant time
 	private boolean isHeap() {
         for (int i = 0; i < values.size(); i++) {
@@ -123,4 +129,6 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
         }
         return true;
     }
+
+
 }
