@@ -88,7 +88,7 @@ public class Heap<T extends Comparable<T>> {
 
   private boolean isHeap() {
     int i = 1;
-    while (i < values.size() && !less(values.get(parent(i)), values.get(i))) {
+    while (i < values.size() && !less( values.get(parent(i)), values.get(i))) {
       i++;
     }
     return i >= values.size();

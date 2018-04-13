@@ -55,10 +55,10 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 	}
 
 	public void insert(int elem) {
-		// assert isHeap();
+		assert isHeap();
 		insertUnordered(elem);
 		heapify();
-		// assert isHeap();
+		assert isHeap();
 	}
 
 	public int max() {
@@ -85,9 +85,42 @@ public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 		return result;
 	}
 
+	public int[] removeNLargest (int n) {
+		if(values.size() < n) 
+			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
+	
+			BinaryHeapQueue<T> temp = new BinaryHeapQueue<T>(this);
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++) {
+				result[i] = (Integer) values.remove(i);
+			}
+		return result;
+	}
+
+	public int size(){
+		return values.size();
+	}
+
+	public void merge(BinaryHeapQueue<T> queue) {
+		for (int i = 0; i < queue.size(); i++){
+			values.add( (Integer) queue.values.get(i));
+		}
+		heapify();
+	}
+
 	private ArrayList<T> copyValues() {
         ArrayList<T> temp = new ArrayList<T>(values.size());
         temp.addAll(values);
         return temp; 
+	}
+	
+	//check if heap in constant time
+	private boolean isHeap() {
+        for (int i = 0; i < values.size(); i++) {
+            if ((Integer) values.get(i / 2) < ((Integer) values.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
