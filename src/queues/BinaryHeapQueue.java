@@ -1,96 +1,93 @@
 // file: heap/queues/Heap.java
 package queues;
 import java.util.ArrayList;
+import queues.Heap;
+import java.util.Collections;
 
 public class BinaryHeapQueue<T extends Comparable<T>> extends Heap {
 
-  ArrayList<T> values;
+	public BinaryHeapQueue() {
+		super();
+	}
 
-  public BinaryHeapQueue() {
-    values = new ArrayList<T>();
-  }
+	public BinaryHeapQueue(BinaryHeapQueue<T> bhq) { // "copy constructor"
+		super();
+		values = bhq.copyValues();
+	}
 
-  private boolean less(T a, T b) {
-    return a.compareTo(b) < 0;
-  }
+	public void insertUnordered(int elem) {
+		values.add(elem);
+	}
 
-  public boolean isEmpty() {
-    return values.isEmpty();
-  }
+	public void insertUnordered(int[] elemArray) {
+		for (int i = 0; i < elemArray.length; i++) {
+		values.add(values.size(), elemArray[i]);
+		}
+	}
 
-  public void enqueue(T x) {
-    assert isHeap();
-    values.add(x); // not insert
-    upHeap();
-    assert isHeap();
-  }
+	public void heapify() {
+		int lastIndex = values.size() - 1; // get the index of the last element in the array
+		for (int i = lastIndex / 2; i >= 0; i--) { // decrement "up" the heap parent = (i-1)/2
+		checkPos(i, lastIndex);
+		}
 
-  public T peek() {
-    return values.isEmpty() ? null : values.get(0);
-  }
+		for (int i = lastIndex; i > 0; i--){
+		Collections.swap(values, 0, i);
+		lastIndex--;
+		checkPos(0, lastIndex);
+		}
+	}
 
-  public T dequeue() {
-    assert isHeap();
-    if (values.isEmpty())
-      throw new IllegalStateException("cannot pop from empty queue");
-    T top = values.get(0);
-    values.set(0, values.get(values.size()-1));
-    values.remove(values.size()-1);
-    if (!values.isEmpty())
-      downHeap();
-    assert isHeap();
-    return top;
-  }
+	// index of the successor and the newly added index on the last position are checked
+	public void checkPos(int succ, int lastIndex) {
+		int leftChild = left(succ);  // changed method to protected to work here
+		int rightChild = right(succ);
+		int thisPos = succ;
 
-  // shift index (more computation, less space)
-  private static int parent(int i) { return (i-1)/2; }
-  private static int left (int i) { return i*2+1; }
-  private static int right (int i) { return i*2+2; }
-  
-  private void upHeap() {
-    int i = values.size()-1;
-    T x = values.get(i);
-    while (i != 0 && less(values.get(parent(i)), x)) { // ~ a[i/2] < e
-      values.set(i, values.get(parent(i))); // ~ a[i] = a[i/2]
-      i = parent(i);
+		if (leftChild <= lastIndex && (Integer) values.get(leftChild) < (Integer) values.get(thisPos))
+			thisPos = leftChild;
+		if (rightChild <= lastIndex && (Integer) values.get(rightChild) < (Integer) values.get(thisPos))
+			thisPos = rightChild;
+		if (thisPos != succ) {
+			Collections.swap(values, succ, thisPos);
+			checkPos(thisPos, lastIndex);
+		}
+	}
+
+	public void insert(int elem) {
+		// assert isHeap();
+		insertUnordered(elem);
+		heapify();
+		// assert isHeap();
+	}
+
+	public int max() {
+		if (values.isEmpty())
+			throw new IllegalStateException("max() queue is empty");
+		return (Integer) values.get(0);
+	}
+
+	public int removeMax() {
+		if (values.isEmpty())
+			throw new IllegalStateException("removeMax() queue is empty");
+		return (Integer) dequeue();
+	}
+
+	public int[] nLargest(int n) {
+		if(values.size() < n) 
+			throw new IllegalArgumentException("nLargest(int n) not enough values stored in queue");
+		
+			BinaryHeapQueue<T> temp = new BinaryHeapQueue<T>(this);
+			int[] result = new int[n];
+			for (int i = 0; i < n; i++) {
+				result[i] = (Integer) values.get(i);
+			}
+		return result;
+	}
+
+	private ArrayList<T> copyValues() {
+        ArrayList<T> temp = new ArrayList<T>(values.size());
+        temp.addAll(values);
+        return temp; 
     }
-    values.set(i, x);
-  }
-
-  private void downHeap() {
-    assert !values.isEmpty(); // enable with "java -ea"
-    int i = 0;
-    T x = values.get(0);
-    while (left(i) < values.size()) {
-      int j = left(i); // j = larger child index
-      if (right(i) < values.size() && 
-          less(values.get(left(i)), values.get(right(i)))) {
-        j = right(i);
-      }
-      if (!less(x, values.get(j))) break;
-      values.set(i, values.get(j));
-      i = j;
-    }
-    values.set(i, x);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("heap = [");
-    for (int i = 0; i < values.size(); i++) {
-      if (i > 0) sb.append(" ");
-      sb.append(values.get(i));
-    }
-    sb.append("]");
-    return sb.toString();
-  }
-
-  private boolean isHeap() {
-    int i = 1;
-    while (i < values.size() && !less(values.get(parent(i)), values.get(i))) {
-      i++;
-    }
-    return i >= values.size();
-  }
 }

@@ -43,9 +43,9 @@ public class Heap<T extends Comparable<T>> {
   }
 
   // shift index (more computation, less space)
-  private static int parent(int i) { return (i-1)/2; }
-  private static int left (int i) { return i*2+1; }
-  private static int right (int i) { return i*2+2; }
+  protected static int parent(int i) { return (i-1)/2; }
+  protected static int left (int i) { return i*2+1; }
+  protected static int right (int i) { return i*2+2; }
   
   private void upHeap() {
     int i = values.size()-1;
